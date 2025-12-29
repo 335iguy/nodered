@@ -1,3 +1,16 @@
+# Published at: https://flows.blueforcer.de/flow/npWxo0GjAvJk#
+# This uses the FlightRadar24 integration with HomeAssistant: FlightRadar24 HACS Integration - credit to AlexandrErohin. 
+# It will send a notification to your clock with the flight number, source location, and destination location. 
+# You can customize the function node to your liking. Additionally, not only does this send out a notification to the clock,
+# there is a second MQTT out which sets it as an app so you can review the last flight overhead :)
+#
+# **BEFORE IMPLEMENTING:**   
+# Review the code and fill out the necessary information: My FlightRadar24 entities have the default naming nomenclature. Change yours if necessary.
+# [awtrixName] = MQTT name of your AWTRIX clock
+# [brokerName] = MQTT Broker Name (usually HomeAssistant-Int)
+# [brokerIP] = MQTT Broker IP address
+# [brokerPort] = MQTT port
+
 [
     {
         "id": "8746a5bd8155578f",
