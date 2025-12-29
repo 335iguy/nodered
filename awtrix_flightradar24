@@ -1,0 +1,212 @@
+[
+    {
+        "id": "8746a5bd8155578f",
+        "type": "group",
+        "z": "6190826355af2250",
+        "style": {
+            "stroke": "#232433",
+            "stroke-opacity": "1",
+            "fill": "#16161e",
+            "fill-opacity": "0.5",
+            "label": true,
+            "label-position": "nw",
+            "color": "#787c99"
+        },
+        "nodes": [
+            "7bb3435685b38890",
+            "41af1f322728d999",
+            "eb4c784ee52582e7",
+            "4ab4e14182e95811",
+            "c5e74ec0f702b77e"
+        ],
+        "x": 1334,
+        "y": 399,
+        "w": 832,
+        "h": 122
+    },
+    {
+        "id": "7bb3435685b38890",
+        "type": "server-state-changed",
+        "z": "6190826355af2250",
+        "g": "8746a5bd8155578f",
+        "name": "Flight Overhead",
+        "server": "f0e55252.db692",
+        "version": 6,
+        "outputs": 2,
+        "exposeAsEntityConfig": "",
+        "entities": {
+            "entity": [
+                "sensor.flightradar24_current_in_area"
+            ],
+            "substring": [],
+            "regex": []
+        },
+        "outputInitially": false,
+        "stateType": "num",
+        "ifState": "1",
+        "ifStateType": "num",
+        "ifStateOperator": "gte",
+        "outputOnlyOnStateChange": false,
+        "for": "0",
+        "forType": "num",
+        "forUnits": "minutes",
+        "ignorePrevStateNull": false,
+        "ignorePrevStateUnknown": false,
+        "ignorePrevStateUnavailable": false,
+        "ignoreCurrentStateUnknown": true,
+        "ignoreCurrentStateUnavailable": true,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "number",
+                "valueType": "entityState"
+            },
+            {
+                "property": "data",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "eventData"
+            },
+            {
+                "property": "topic",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "triggerId"
+            }
+        ],
+        "x": 1440,
+        "y": 440,
+        "wires": [
+            [
+                "eb4c784ee52582e7"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "41af1f322728d999",
+        "type": "function",
+        "z": "6190826355af2250",
+        "g": "8746a5bd8155578f",
+        "name": "Create Msg",
+        "func": "let flights = msg.data.new_state.attributes.flights[0];\n\nlet flight_number = flights.flight_number || \"N/A\";\nlet aircraft_registration = flights.aircraft_registration || \"N/A\";\nlet aircraft_model = flights.aircraft_model || \"N/A\";\nlet origin = flights.airport_origin_code_icao || \"UNK\";\nlet destination = flights.airport_destination_code_icao || \"UNK\";\nlet speed = flights.ground_speed || \"N/A\";\n\n// AWTRIX payload format\nmsg.payload = {\n    \"name\": \"flights\",\n    \"text\": `${flight_number} ${origin} > ${destination}`,\n    \"icon\": \"31805\",\n    \"duration\": \"15\",\n    \"repeat\": \"3\",\n    \"scrollspeed\": \"100\",\n    \"pushicon\": \"2\",\n    \"save\": true,\n    \"stack\": false\n}\n;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1790,
+        "y": 440,
+        "wires": [
+            [
+                "4ab4e14182e95811",
+                "c5e74ec0f702b77e"
+            ]
+        ]
+    },
+    {
+        "id": "eb4c784ee52582e7",
+        "type": "delay",
+        "z": "6190826355af2250",
+        "g": "8746a5bd8155578f",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "minute",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1610,
+        "y": 440,
+        "wires": [
+            [
+                "41af1f322728d999"
+            ]
+        ]
+    },
+    {
+        "id": "4ab4e14182e95811",
+        "type": "mqtt out",
+        "z": "6190826355af2250",
+        "g": "8746a5bd8155578f",
+        "name": "",
+        "topic": "[awtrixName]/notify",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "eaca5628813067ea",
+        "x": 2010,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "c5e74ec0f702b77e",
+        "type": "mqtt out",
+        "z": "6190826355af2250",
+        "g": "8746a5bd8155578f",
+        "name": "",
+        "topic": "[awtrixName]/custom/flights",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "eaca5628813067ea",
+        "x": 2030,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "eaca5628813067ea",
+        "type": "mqtt-broker",
+        "name": "[brokerName]",
+        "broker": "[brokerIP]",
+        "port": "[brokerPort]",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "fc8d200576f4ba3c",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-contrib-home-assistant-websocket": "0.80.3"
+        }
+    }
+]
